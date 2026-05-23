@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alerts – CancerRise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'cancerapp/css/main.css' %}">
+</head>
+<body class="app-page">
+
+<header class="app-topbar" role="banner">
+  <div class="topbar-inner">
+    <div class="topbar-left">
+      <a href="{% url 'home' %}" class="profile-avatar" aria-label="Back to dashboard">SJ</a>
+      <a href="#" class="chatbot-btn" aria-label="Open AI chatbot support">
+        <i class="fa-solid fa-robot" aria-hidden="true"></i>
+      </a>
+    </div>
+    <div class="topbar-right">
+      <a href="{% url 'landing' %}" class="app-logo" aria-label="CancerRise home">
+        <i class="fa-solid fa-ribbon" aria-hidden="true"></i> CancerRise
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="app-main" role="main">
+
+  <div class="page-topbar-bar">
+    <a href="{% url 'home' %}" class="back-link" aria-label="Return to dashboard">
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to Dashboard
+    </a>
+    <span aria-hidden="true" style="color: var(--border);">|</span>
+    <div class="page-title-bar">
+      <i class="fa-solid fa-bell" style="color: var(--danger);" aria-hidden="true"></i>
+      Alerts
+      <span class="alert-badge" aria-label="2 unread alerts">2</span>
+    </div>
+  </div>
+
+  <div class="alert-page-body">
+
+    <!-- Warning banner -->
+    <div class="alert-warning-banner" role="alert">
+      <i class="fa-solid fa-triangle-exclamation alert-pulse-icon" aria-hidden="true"></i>
+      <h2>You Are Not Alone</h2>
+      <p>
+        If you are feeling distressed, overwhelmed, or need immediate medical attention —
+        reach out right now. Your care team is always here for you.
+      </p>
+    </div>
+
+    <!-- Emergency Actions -->
+    <div class="emergency-cards">
+
+      <!-- Doctor -->
+      <div class="emergency-card ec-doctor">
+        <div class="ec-icon red" aria-hidden="true">
+          <i class="fa-solid fa-user-doctor"></i>
+        </div>
+        <div class="ec-body">
+          <h3>Call My Doctor</h3>
+          <p>Reach your oncology care team directly for urgent medical concerns or new symptoms.</p>
+          <div class="ec-contact">
+            <i class="fa-solid fa-phone" aria-hidden="true"></i>
+            Dr. Amira Khalil — Oncology
+          </div>
+        </div>
+        <a href="tel:+966112345678" class="ec-call-btn red" aria-label="Call Dr. Amira Khalil">
+          <i class="fa-solid fa-phone" aria-hidden="true"></i> Call Now
+        </a>
+      </div>
+
+      <!-- Psychologist -->
+      <div class="emergency-card ec-psych">
+        <div class="ec-icon violet" aria-hidden="true">
+          <i class="fa-solid fa-brain"></i>
+        </div>
+        <div class="ec-body">
+          <h3>Call My Psychologist</h3>
+          <p>Speak with your mental health specialist for emotional or psychological distress.</p>
+          <div class="ec-contact">
+            <i class="fa-solid fa-phone" aria-hidden="true"></i>
+            Dr. Hana Mansouri — Psychology
+          </div>
+        </div>
+        <a href="tel:+966119876543" class="ec-call-btn violet" aria-label="Call Dr. Hana Mansouri">
+          <i class="fa-solid fa-phone" aria-hidden="true"></i> Call Now
+        </a>
+      </div>
+
+      <!-- Crisis -->
+      <div class="emergency-card ec-crisis">
+        <div class="ec-icon dark" aria-hidden="true">
+          <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+        <div class="ec-body">
+          <h3>I Need Help</h3>
+          <p>If you are in crisis or need immediate emotional support, connect with a counselor right now. Available 24 hours a day, 7 days a week.</p>
+          <div class="ec-contact">
+            <i class="fa-solid fa-phone" aria-hidden="true"></i>
+            Crisis Support Line — 920033360
+          </div>
+        </div>
+        <a href="tel:920033360" class="ec-call-btn dark" aria-label="Connect to crisis support line">
+          <i class="fa-solid fa-phone" aria-hidden="true"></i> Connect
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Reassurance message -->
+    <div class="alert-reassurance">
+      <p>
+        <strong>You are brave, and you are never alone.</strong><br>
+        CancerRise is with you every step of the way. Whatever you're feeling right now is valid.
+        Reaching out is a sign of strength — your care team is here for all of you, not just your treatment.
+      </p>
+    </div>
+
+  </div>
+
+</main>
+
+</body>
+</html>

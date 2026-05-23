@@ -1,0 +1,398 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In – CancerRise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'cancerapp/css/main.css' %}">
+  <style>
+    /* ---- DB status indicator ---- */
+    .db-status {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      font-size: 0.72rem; font-weight: 700; color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+    .db-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #bbb; flex-shrink: 0; transition: background 0.3s;
+    }
+    .db-dot.synced  { background: #4CAF50; animation: blink 2s ease-in-out infinite; }
+    .db-dot.error   { background: var(--danger); }
+    .db-dot.loading { background: #FB8C00; animation: blink 0.7s ease-in-out infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+    /* ---- Error message ---- */
+    .login-error {
+      background: var(--danger-light); border: 1px solid #EF9A9A;
+      border-radius: var(--radius-sm); padding: 0.7rem 1rem;
+      font-size: 0.83rem; font-weight: 700; color: var(--danger);
+      margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .login-error.hidden { display: none; }
+
+    /* ---- PIN field style ---- */
+    .pin-input { letter-spacing: 0.35em; }
+
+    /* ---- Card-detected toast ---- */
+    .card-toast {
+      position: fixed; top: 1.5rem; left: 50%; transform: translateX(-50%) translateY(-80px);
+      background: linear-gradient(135deg, var(--pink-500), var(--pink-700));
+      color: #fff; padding: 0.75rem 1.6rem;
+      border-radius: 50px; font-family: 'Nunito', sans-serif;
+      font-weight: 700; font-size: 0.9rem;
+      box-shadow: 0 8px 28px rgba(160,45,98,0.35);
+      display: flex; align-items: center; gap: 0.6rem;
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      pointer-events: none; z-index: 999; white-space: nowrap;
+    }
+    .card-toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ---- Auto-fill highlight on username field ---- */
+    .form-input.scanned {
+      background: var(--pink-50) !important;
+      border-color: var(--pink-500) !important;
+      transition: background 0.3s, border-color 0.3s;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Card-detected toast -->
+<div class="card-toast" id="cardToast" aria-live="polite" aria-atomic="true">
+  <i class="fa-solid fa-id-card" aria-hidden="true"></i>
+  <span id="cardToastMsg">Card detected — enter your PIN</span>
+</div>
+
+<main class="login-page">
+  <div class="login-card" role="main">
+
+    <div class="login-logo">
+      <div class="logo-name">
+        <i class="fa-solid fa-ribbon" aria-hidden="true"></i> CancerRise
+      </div>
+      <div class="logo-sub">Your Breast Cancer Rehabilitation Platform</div>
+    </div>
+
+    <div class="login-welcome">
+      <h2>Welcome Back</h2>
+      <p>Sign in to access your personal health dashboard and medical history.</p>
+    </div>
+
+    <!-- Live DB connection status -->
+    <div class="db-status" aria-live="polite">
+      <span class="db-dot loading" id="dbDot"></span>
+      <span id="dbStatusText">Connecting to server…</span>
+    </div>
+
+    <!-- Error banner -->
+    <div class="login-error hidden" id="loginError" role="alert">
+      <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+      <span id="loginErrorMsg">Invalid username or PIN.</span>
+    </div>
+
+    <form id="loginForm" novalidate aria-label="Sign in form" onsubmit="handleLogin(event)">
+
+      <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <div class="input-wrap">
+          <i class="fa-solid fa-user" aria-hidden="true"></i>
+          <input
+            type="text" id="username" name="username"
+            class="form-input"
+            placeholder="Enter your username"
+            autocomplete="username"
+            aria-required="true"
+            spellcheck="false"
+            autocapitalize="none"
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="pin">PIN</label>
+        <div class="input-wrap">
+          <i class="fa-solid fa-lock" aria-hidden="true"></i>
+          <input
+            type="password" id="pin" name="pin"
+            class="form-input pin-input"
+            placeholder="••••••"
+            autocomplete="current-password"
+            inputmode="numeric"
+            aria-required="true"
+            maxlength="12"
+          >
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="check-label">
+          <input type="checkbox" id="remember" name="remember">
+          Remember me
+        </label>
+        <a href="#" class="form-link">Forgot PIN?</a>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-login" id="loginBtn">
+        <i class="fa-solid fa-arrow-right-to-bracket" aria-hidden="true"></i>
+        Sign In Securely
+      </button>
+
+    </form>
+
+    <div class="or-divider"><span>New to CancerRise?</span></div>
+
+    <div class="signup-text">
+      <a href="#">Create your account</a> to start your rehabilitation journey.
+    </div>
+
+    <div class="back-to-site">
+      <a href="{% url 'landing' %}">
+        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+        Back to CancerRise.com
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  var FIREBASE_URL = 'https://atast2026-default-rtdb.europe-west1.firebasedatabase.app/.json';
+
+  /* Fields the card scanner might write to when a card is scanned */
+  var SCAN_FIELDS = ['scan', 'last_scan', 'uid', 'card', 'card_id',
+                     'current_user', 'scanned_user', 'scanned', 'user', 'username'];
+
+  var dbData     = null;
+  var prevDbData = null;
+  var dbReady    = false;
+
+  var dot        = document.getElementById('dbDot');
+  var statusText = document.getElementById('dbStatusText');
+
+  /* ---------- Status indicator ---------- */
+  function setStatus(state, text) {
+    dot.className = 'db-dot ' + state;
+    statusText.textContent = text;
+  }
+
+  /* ---------- Firebase polling ---------- */
+  function fetchData() {
+    fetch(FIREBASE_URL)
+      .then(function(res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then(function(data) {
+        prevDbData = dbData;
+        dbData     = data;
+        dbReady    = true;
+        setStatus('synced', 'Connected · Data up to date');
+
+        if (prevDbData !== null) {
+          checkForCardScan(prevDbData, data);
+        }
+      })
+      .catch(function() {
+        dbReady = false;
+        setStatus('error', 'Cannot reach server');
+      });
+  }
+
+  fetchData();
+  setInterval(fetchData, 1000);
+
+  /* ---------- Card scan detection ----------
+     Compares the previous and current Firebase snapshots.
+     Returns the scanned username string if a change is detected. */
+  function checkForCardScan(prev, curr) {
+    if (!curr || typeof curr !== 'object') return;
+
+    /* 1. Check well-known scan field names */
+    for (var i = 0; i < SCAN_FIELDS.length; i++) {
+      var f = SCAN_FIELDS[i];
+      if (curr[f] !== undefined && curr[f] !== (prev && prev[f])) {
+        autoFillUsername(String(curr[f]));
+        return;
+      }
+    }
+
+    /* 2. Fallback: any top-level string-valued field that changed (skip pin) */
+    var keys = Object.keys(curr);
+    for (var j = 0; j < keys.length; j++) {
+      var k = keys[j];
+      if (k === 'pin' || k === 'users') continue;
+      if (typeof curr[k] === 'string' && curr[k] !== (prev && prev[k])) {
+        autoFillUsername(curr[k]);
+        return;
+      }
+    }
+  }
+
+  /* ---------- Auto-fill username from card scan ---------- */
+  function autoFillUsername(username) {
+    if (!username) return;
+    var input = document.getElementById('username');
+
+    /* Skip if input already has this value and user has not cleared it */
+    if (input.value === username) return;
+
+    input.value = username;
+    input.classList.add('scanned');
+    setTimeout(function() { input.classList.remove('scanned'); }, 2000);
+
+    showCardToast(username);
+    hideError();
+
+    /* Move focus to PIN field after a short delay */
+    setTimeout(function() {
+      document.getElementById('pin').focus();
+    }, 500);
+  }
+
+  /* ---------- Card-detected toast ---------- */
+  var toastTimer = null;
+  function showCardToast(username) {
+    var toast = document.getElementById('cardToast');
+    document.getElementById('cardToastMsg').textContent =
+      'Card detected' + (username ? ' — ' + username : '') + '. Enter your PIN.';
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() { toast.classList.remove('show'); }, 3500);
+  }
+
+  /* ---------- Login validation ---------- */
+  function findUser(username, pin) {
+    if (!dbData) return false;
+
+    /* Pattern A – flat: { "username": "alice", "pin": "1234" } */
+    if (dbData.username !== undefined && dbData.pin !== undefined) {
+      return String(dbData.username) === username && String(dbData.pin) === pin;
+    }
+
+    /* Pattern B – keyed by username with object value: { "alice": { "pin": "1234" } } */
+    if (dbData[username] !== undefined) {
+      var node = dbData[username];
+      if (node && typeof node === 'object' && node.pin !== undefined) {
+        return String(node.pin) === pin;
+      }
+      /* Pattern C – value IS the pin: { "alice": "1234" } */
+      if (typeof node === 'string' || typeof node === 'number') {
+        return String(node) === pin;
+      }
+    }
+
+    /* Pattern D – users sub-object: { "users": { "alice": { "pin": "1234" } } } */
+    if (dbData.users && dbData.users[username]) {
+      var u = dbData.users[username];
+      if (u && u.pin !== undefined) return String(u.pin) === pin;
+    }
+
+    /* Pattern E – array: [{ "username": "alice", "pin": "1234" }] */
+    if (Array.isArray(dbData)) {
+      return dbData.some(function(u) {
+        return String(u.username) === username && String(u.pin) === pin;
+      });
+    }
+
+    /* Pattern F – records object: { "r1": { "username": "alice", "pin": "1234" } } */
+    var keys = Object.keys(dbData);
+    for (var i = 0; i < keys.length; i++) {
+      var item = dbData[keys[i]];
+      if (item && typeof item === 'object' &&
+          String(item.username) === username && String(item.pin) === pin) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /* Try to read a full name for the user from the database */
+  function lookupName(username) {
+    if (!dbData) return null;
+    var record = dbData[username]
+      || (dbData.users && dbData.users[username])
+      || null;
+
+    if (!record) {
+      /* Search records objects */
+      var keys = Object.keys(dbData);
+      for (var i = 0; i < keys.length; i++) {
+        var r = dbData[keys[i]];
+        if (r && typeof r === 'object' && String(r.username) === username) {
+          record = r; break;
+        }
+      }
+    }
+
+    return (record && (record.name || record.full_name || record.fullname)) || null;
+  }
+
+  /* Convert a username string to a display name:
+     "kenza_ouni" → "Kenza Ouni", "kenzaouni" → "Kenzaouni" */
+  function formatDisplayName(str) {
+    return str
+      .replace(/[_.\-]+/g, ' ')
+      .replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+  }
+
+  function getInitials(name) {
+    var parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+
+  function showError(msg) {
+    var el = document.getElementById('loginError');
+    document.getElementById('loginErrorMsg').textContent =
+      msg || 'Invalid username or PIN. Please try again.';
+    el.classList.remove('hidden');
+  }
+
+  function hideError() {
+    document.getElementById('loginError').classList.add('hidden');
+  }
+
+  function handleLogin(e) {
+    e.preventDefault();
+    hideError();
+
+    var username = document.getElementById('username').value.trim();
+    var pin      = document.getElementById('pin').value.trim();
+
+    if (!username || !pin) {
+      showError('Please enter your username and PIN.');
+      return;
+    }
+    if (!dbReady || !dbData) {
+      showError('Still connecting to the server. Please wait a moment and try again.');
+      return;
+    }
+
+    if (findUser(username, pin)) {
+      /* Save user identity for downstream pages */
+      var name = lookupName(username) || formatDisplayName(username);
+      sessionStorage.setItem('cr_username', username);
+      sessionStorage.setItem('cr_name',     name);
+      sessionStorage.setItem('cr_initials', getInitials(name));
+
+      window.location.href = "{% url 'home' %}";
+    } else {
+      showError('Invalid username or PIN. Please check your credentials and try again.');
+      document.getElementById('pin').value = '';
+      document.getElementById('pin').focus();
+    }
+  }
+
+  document.getElementById('username').addEventListener('input', hideError);
+  document.getElementById('pin').addEventListener('input', hideError);
+</script>
+
+</body>
+</html>

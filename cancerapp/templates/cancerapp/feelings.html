@@ -1,0 +1,192 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feelings Journal – CancerRise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'cancerapp/css/main.css' %}">
+</head>
+<body class="app-page">
+
+<header class="app-topbar" role="banner">
+  <div class="topbar-inner">
+        <div class="topbar-right">
+      <a href="{% url 'landing' %}" class="app-logo" aria-label="CancerRise home">
+        <i class="fa-solid fa-ribbon" aria-hidden="true"></i> CancerRise
+      </a>
+    </div>
+    <div class="topbar-left">
+      <a href="{% url 'settings' %}" class="profile-avatar" aria-label="Back to dashboard">SJ</a>
+      <a href="{% url 'chatbot' %}" class="chatbot-btn" aria-label="Open AI chatbot support">
+        <i class="fa-solid fa-robot" aria-hidden="true"></i>
+      </a>
+    </div>
+
+  </div>
+</header>
+
+<main class="app-main" role="main">
+
+  <div class="page-topbar-bar">
+    <a href="{% url 'home' %}" class="back-link" aria-label="Return to dashboard">
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to Dashboard
+    </a>
+    <span aria-hidden="true" style="color: var(--border);">|</span>
+    <div class="page-title-bar">
+      <i class="fa-solid fa-face-smile" style="color: #7B1FA2;" aria-hidden="true"></i>
+      Feelings Journal
+    </div>
+  </div>
+
+  <!-- Mood Picker -->
+  <div class="feelings-section">
+    <h2 class="feelings-section-title">How are you feeling today?</h2>
+    <div class="mood-grid" role="group" aria-label="Select your current mood">
+      <button class="mood-btn" data-mood="amazing" aria-pressed="false" onclick="selectMood(this)">
+        <span class="mood-emoji" aria-hidden="true">🌟</span>
+        Amazing
+      </button>
+      <button class="mood-btn" data-mood="good" aria-pressed="false" onclick="selectMood(this)">
+        <span class="mood-emoji" aria-hidden="true">😊</span>
+        Good
+      </button>
+      <button class="mood-btn" data-mood="okay" aria-pressed="false" onclick="selectMood(this)">
+        <span class="mood-emoji" aria-hidden="true">😐</span>
+        Okay
+      </button>
+      <button class="mood-btn" data-mood="low" aria-pressed="false" onclick="selectMood(this)">
+        <span class="mood-emoji" aria-hidden="true">😔</span>
+        Low
+      </button>
+      <button class="mood-btn" data-mood="struggling" aria-pressed="false" onclick="selectMood(this)">
+        <span class="mood-emoji" aria-hidden="true">💙</span>
+        Struggling
+      </button>
+    </div>
+  </div>
+
+  <!-- Journal Input -->
+  <div class="feelings-section">
+    <h2 class="feelings-section-title">Write your thoughts</h2>
+    <div class="journal-wrap">
+      <textarea
+        class="journal-textarea"
+        id="journalText"
+        placeholder="Anything on your mind today? Your thoughts are private and safe here…"
+        aria-label="Today's journal entry"
+      ></textarea>
+      <div class="journal-footer">
+        <span class="journal-date-tag" id="journalDate"></span>
+        <button class="journal-save-btn" onclick="saveEntry()">
+          <i class="fa-solid fa-bookmark" aria-hidden="true"></i> Save Entry
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Past Entries -->
+  <div class="feelings-section">
+    <h2 class="feelings-section-title">Your Journal</h2>
+    <div class="journal-entries" id="entriesList"></div>
+  </div>
+
+</main>
+
+<!-- Save confirmation toast -->
+<div class="save-toast" id="saveToast" role="status" aria-live="polite">
+  <i class="fa-solid fa-check" aria-hidden="true"></i> Entry saved
+</div>
+
+<script>
+  const ENTRIES_KEY = 'feelings_entries';
+  let selectedMood = null;
+
+  const moodEmojis = {
+    amazing: '🌟', good: '😊', okay: '😐', low: '😔', struggling: '💙'
+  };
+
+  function selectMood(btn) {
+    document.querySelectorAll('.mood-btn').forEach(function(b) {
+      b.classList.remove('selected');
+      b.setAttribute('aria-pressed', 'false');
+    });
+    btn.classList.add('selected');
+    btn.setAttribute('aria-pressed', 'true');
+    selectedMood = btn.dataset.mood;
+  }
+
+  function saveEntry() {
+    const text = document.getElementById('journalText').value.trim();
+    if (!text && !selectedMood) return;
+
+    const entries = JSON.parse(localStorage.getItem(ENTRIES_KEY) || '[]');
+    const now = new Date();
+    entries.unshift({
+      mood: selectedMood,
+      text: text,
+      date: now.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
+    });
+    localStorage.setItem(ENTRIES_KEY, JSON.stringify(entries));
+
+    // Reset form
+    document.getElementById('journalText').value = '';
+    document.querySelectorAll('.mood-btn').forEach(function(b) {
+      b.classList.remove('selected');
+      b.setAttribute('aria-pressed', 'false');
+    });
+    selectedMood = null;
+
+    renderEntries();
+    showToast();
+  }
+
+  function escape(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  function renderEntries() {
+    const entries = JSON.parse(localStorage.getItem(ENTRIES_KEY) || '[]');
+    const list = document.getElementById('entriesList');
+
+    if (entries.length === 0) {
+      list.innerHTML = '<div class="no-entries"><i class="fa-regular fa-book-open" aria-hidden="true"></i>No entries yet. Write your first thought above!</div>';
+      return;
+    }
+
+    list.innerHTML = entries.map(function(e) {
+      const moodPill = e.mood
+        ? '<span class="entry-mood-pill">' + moodEmojis[e.mood] + ' ' + capitalize(e.mood) + '</span>'
+        : '<span class="entry-mood-pill">📝 Journal</span>';
+      const body = e.text ? '<p class="entry-text">' + escape(e.text) + '</p>' : '';
+      return '<div class="entry-card">'
+        + '<div class="entry-card-header">' + moodPill + '<span class="entry-date">' + e.date + '</span></div>'
+        + body
+        + '</div>';
+    }).join('');
+  }
+
+  function showToast() {
+    const t = document.getElementById('saveToast');
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 2500);
+  }
+
+  // Set today's date label
+  document.getElementById('journalDate').textContent = new Date().toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  });
+
+  renderEntries();
+</script>
+
+</body>
+</html>

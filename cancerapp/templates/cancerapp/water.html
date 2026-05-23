@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Water History – CancerRise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'cancerapp/css/main.css' %}">
+</head>
+<body class="app-page">
+
+<header class="app-topbar" role="banner">
+  <div class="topbar-inner">
+    <div class="topbar-left">
+      <a href="{% url 'home' %}" class="profile-avatar" aria-label="Back to dashboard">SJ</a>
+      <a href="#" class="chatbot-btn" aria-label="Open AI chatbot support">
+        <i class="fa-solid fa-robot" aria-hidden="true"></i>
+      </a>
+    </div>
+    <div class="topbar-right">
+      <a href="{% url 'landing' %}" class="app-logo" aria-label="CancerRise home">
+        <i class="fa-solid fa-ribbon" aria-hidden="true"></i> CancerRise
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="app-main" role="main">
+
+  <div class="page-topbar-bar">
+    <a href="{% url 'home' %}" class="back-link" aria-label="Return to dashboard">
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to Dashboard
+    </a>
+    <span aria-hidden="true" style="color: var(--border);">|</span>
+    <div class="page-title-bar">
+      <i class="fa-solid fa-droplet" style="color: #1565C0;" aria-hidden="true"></i>
+      Water History
+    </div>
+  </div>
+
+  <!-- Daily Progress -->
+  <div class="water-progress-wrap">
+    <div class="water-progress-label">
+      <span>Today's hydration goal</span>
+      <strong id="glassCount">0 / 8 glasses</strong>
+    </div>
+    <div class="water-progress-bar-bg">
+      <div class="water-progress-bar" id="progressBar" style="width: 0%"></div>
+    </div>
+    <div class="water-glasses-row" aria-hidden="true">
+      <span class="water-glass" data-idx="0">💧</span>
+      <span class="water-glass" data-idx="1">💧</span>
+      <span class="water-glass" data-idx="2">💧</span>
+      <span class="water-glass" data-idx="3">💧</span>
+      <span class="water-glass" data-idx="4">💧</span>
+      <span class="water-glass" data-idx="5">💧</span>
+      <span class="water-glass" data-idx="6">💧</span>
+      <span class="water-glass" data-idx="7">💧</span>
+    </div>
+  </div>
+
+  <!-- Recommended Schedule -->
+  <div class="water-schedule" id="waterSchedule">
+
+    <div class="water-slot" data-slot="0">
+      <div class="water-slot-time">7:00 AM</div>
+      <div class="water-slot-body">
+        <h4>Morning Awakening</h4>
+        <p>Rehydrate after 6–8 hours of sleep. Kick-starts your metabolism and flushes overnight toxins.</p>
+      </div>
+      <button class="water-done-btn" onclick="markDone(0)" aria-label="Mark 7:00 AM glass as done">Mark Done</button>
+    </div>
+
+    <div class="water-slot" data-slot="1">
+      <div class="water-slot-time">9:00 AM</div>
+      <div class="water-slot-body">
+        <h4>Mid-Morning Boost</h4>
+        <p>Support healthy cortisol levels and maintain focus during your morning routine or therapy session.</p>
+      </div>
+      <button class="water-done-btn" onclick="markDone(1)" aria-label="Mark 9:00 AM glass as done">Mark Done</button>
+    </div>
+
+    <div class="water-slot" data-slot="2">
+      <div class="water-slot-time">11:00 AM</div>
+      <div class="water-slot-body">
+        <h4>Late Morning Hydration</h4>
+        <p>Keeps your energy steady before lunch and supports kidney function — especially important during treatment.</p>
+      </div>
+      <button class="water-done-btn" onclick="markDone(2)" aria-label="Mark 11:00 AM glass as done">Mark Done</button>
+    </div>
+
+    <div class="water-slot" data-slot="3">
+      <div class="water-slot-time">1:00 PM</div>
+      <div class="water-slot-body">
+        <h4>Before Lunch</h4>
+        <p>A glass 30 minutes before your meal aids digestion and helps you feel comfortably full.</p>
+      </div>
+      <button class="water-done-btn" onclick="markDone(3)" aria-label="Mark 1:00 PM glass as done">Mark Done</button>
+    </div>
+
+    <div class="water-slot" data-slot="4">
+      <div class="water-slot-time">3:00 PM</div>
+      <div class="water-slot-body">
+        <h4>Afternoon Reset</h4>
+        <p>Fight the afternoon slump with water instead of caffeine. Great for post-treatment energy recovery.</p>
+      </div>
+      <button class="water-done-btn" onclick="markDone(4)" aria-label="Mark 3:00 PM glass as done">Mark Done</button>
+    </div>
+
+    <div class="water-slot" data-slot="5">
+      <div class="water-slot-time">5:00 PM</div>
+      <div class="water-slot-body">
+        <h4>Pre-Dinner Sip</h4>
+        <p>Maintain hydration going into the evening and prepare your digestive system for dinner.</p>
+      </div>
+      <button class="water-done-btn" onclick="markDone(5)" aria-label="Mark 5:00 PM glass as done">Mark Done</button>
+    </div>
+
+    <div class="water-slot" data-slot="6">
+      <div class="water-slot-time">7:00 PM</div>
+      <div class="water-slot-body">
+        <h4>Evening Wind-Down</h4>
+        <p>Gentle evening hydration supports your body's overnight repair processes and reduces fatigue.</p>
+      </div>
+      <button class="water-done-btn" onclick="markDone(6)" aria-label="Mark 7:00 PM glass as done">Mark Done</button>
+    </div>
+
+    <div class="water-slot" data-slot="7">
+      <div class="water-slot-time">9:00 PM</div>
+      <div class="water-slot-body">
+        <h4>Before Bed</h4>
+        <p>A final small glass keeps you hydrated through the night without disrupting your sleep quality.</p>
+      </div>
+      <button class="water-done-btn" onclick="markDone(7)" aria-label="Mark 9:00 PM glass as done">Mark Done</button>
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+  const STORAGE_KEY = 'water_done_' + new Date().toDateString();
+  let done = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+  function init() {
+    done.forEach(i => applyDone(i));
+    updateProgress();
+  }
+
+  function markDone(i) {
+    if (done.includes(i)) return;
+    done.push(i);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(done));
+    applyDone(i);
+    updateProgress();
+  }
+
+  function applyDone(i) {
+    const slot = document.querySelector(`.water-slot[data-slot="${i}"]`);
+    if (!slot) return;
+    slot.classList.add('done');
+    const btn = slot.querySelector('.water-done-btn');
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> Done';
+    btn.disabled = true;
+  }
+
+  function updateProgress() {
+    const count = done.length;
+    document.getElementById('glassCount').textContent = count + ' / 8 glasses';
+    document.getElementById('progressBar').style.width = Math.round((count / 8) * 100) + '%';
+    document.querySelectorAll('.water-glass').forEach((g, i) => {
+      g.classList.toggle('filled', i < count);
+    });
+  }
+
+  init();
+</script>
+
+</body>
+</html>

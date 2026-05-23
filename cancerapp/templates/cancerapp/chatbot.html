@@ -1,0 +1,306 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Support – CancerRise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'cancerapp/css/main.css' %}">
+</head>
+<body class="app-page chatbot-page">
+
+<header class="app-topbar" role="banner">
+  <div class="topbar-inner">
+    <div class="topbar-right">
+      <a href="{% url 'landing' %}" class="app-logo" aria-label="CancerRise home">
+        <i class="fa-solid fa-ribbon" aria-hidden="true"></i> CancerRise
+      </a>
+    </div>
+    <div class="topbar-left">
+      <a href="{% url 'home' %}" class="profile-avatar" aria-label="Back to dashboard">SJ</a>
+      <a href="{% url 'chatbot' %}" class="chatbot-btn" aria-label="AI chatbot support"
+         style="background: var(--pink-100); border-color: var(--pink-400); color: var(--pink-700);">
+        <i class="fa-solid fa-robot" aria-hidden="true"></i>
+      </a>
+    </div>
+
+  </div>
+</header>
+
+<main class="app-main" role="main">
+
+  <div class="page-topbar-bar">
+    <div class="page-title-bar">
+      <i class="fa-solid fa-robot" style="color: var(--pink-600);" aria-hidden="true"></i>
+      AI Support
+    </div>
+    <a href="{% url 'home' %}" class="back-link" aria-label="Return to dashboard">
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to Dashboard
+    </a>
+
+  </div>
+
+  <div class="chatbot-layout">
+
+    <!-- Sidebar: conversation history -->
+    <aside class="chat-sidebar" aria-label="Conversation history">
+      <div class="chat-sidebar-header">
+        <h4>My Conversations</h4>
+        <button class="new-chat-btn" onclick="startNewChat()" aria-label="Start new conversation">
+          <i class="fa-solid fa-plus" aria-hidden="true"></i> New
+        </button>
+      </div>
+      <div class="chat-sidebar-list" id="sidebarList"></div>
+    </aside>
+
+    <!-- Main chat area -->
+    <div class="chat-main" aria-label="Chat with Rosa">
+
+      <div class="chat-main-header">
+        <div class="chat-bot-avatar" aria-hidden="true">
+          <i class="fa-solid fa-robot"></i>
+        </div>
+        <div class="chat-bot-info">
+          <h4>Rosa — CancerRise AI</h4>
+          <p><span class="chat-online-dot" aria-hidden="true"></span> Available now &middot; Private &amp; confidential</p>
+        </div>
+        <button class="chat-clear-btn" onclick="clearChat()" aria-label="Clear current conversation">
+          <i class="fa-solid fa-trash-can" aria-hidden="true"></i> Clear
+        </button>
+      </div>
+
+      <div class="chat-messages" id="chatMessages" role="log" aria-live="polite" aria-label="Chat messages"></div>
+
+      <div class="chat-suggestions" id="chatSuggestions">
+        <button class="suggestion-chip" onclick="sendSuggestion(this)">How can I manage fatigue?</button>
+        <button class="suggestion-chip" onclick="sendSuggestion(this)">I'm feeling anxious today</button>
+        <button class="suggestion-chip" onclick="sendSuggestion(this)">Nutrition tips after chemo</button>
+        <button class="suggestion-chip" onclick="sendSuggestion(this)">Help me relax</button>
+      </div>
+
+      <div class="chat-input-bar">
+        <input
+          type="text"
+          class="chat-input"
+          id="chatInput"
+          placeholder="Type your message…"
+          aria-label="Type a message to Rosa"
+          autocomplete="off"
+        >
+        <button class="chat-send-btn" id="sendBtn" onclick="sendMessage()" aria-label="Send message">
+          <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<script>
+  var BOT_RESPONSES = [
+    "I hear you \u{1F495} That's completely understandable. Many patients feel this way, and your feelings are always valid here.",
+    "During recovery, pacing yourself is key \u{2014} rest when you need to, and don't push through exhaustion. Would you like some gentle exercises you can try at home?",
+    "Nutrition after chemotherapy is so important. Focus on small, frequent meals rich in protein and antioxidants. Ginger tea can help with nausea, and staying hydrated is essential. Want a sample meal plan?",
+    "Anxiety is a very normal part of this journey. Try the 4-7-8 breathing technique: inhale for 4 counts, hold for 7, exhale for 8. It can calm your nervous system quickly. \u{1F338}",
+    "You are doing so well, even on the hard days. Is there anything specific on your mind that I can help you with today?",
+    "That sounds really difficult. Reaching out like this is a sign of strength. Would you like me to connect you to your care team, or would you prefer to talk it through here?",
+    "Fatigue during treatment is one of the most common experiences. Short 20-minute naps (not too late in the day), gentle walks, and good sleep hygiene all help. How has your sleep been lately?",
+    "I’m always here for you, day or night \u{1F499} Is there something specific you’d like to focus on — physical symptoms, emotional support, or practical tips?"
+  ];
+
+  var STORAGE_KEY = 'cancerrise_chats';
+  var currentChatId = null;
+  var isTyping = false;
+  var responseIndex = 0;
+
+  function loadChats() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  }
+  function saveChats(chats) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(chats));
+  }
+  function nowTime() {
+    return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  }
+  function nowLabel() {
+    return new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+  function esc(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function renderSidebar() {
+    var chats = loadChats();
+    var list = document.getElementById('sidebarList');
+    if (chats.length === 0) {
+      list.innerHTML = '<div style="padding:1.25rem 0.9rem;font-size:0.8rem;color:var(--text-muted);text-align:center;">No conversations yet.<br>Start one below!</div>';
+      return;
+    }
+    list.innerHTML = chats.slice().reverse().map(function(c) {
+      var active = c.id === currentChatId ? ' active' : '';
+      return '<div class="chat-sidebar-item' + active + '" onclick="loadChat(\'' + c.id + '\')" role="button" tabindex="0">'
+        + '<div class="chat-sidebar-item-title">' + esc(c.title) + '</div>'
+        + '<div class="chat-sidebar-item-meta">' + c.date + '</div>'
+        + '</div>';
+    }).join('');
+  }
+
+  function buildBubble(role, text, time) {
+    var isUser = role === 'user';
+    var wrapCls  = isUser ? 'chat-bubble-wrap user' : 'chat-bubble-wrap';
+    var avCls    = isUser ? 'bubble-avatar user-av' : 'bubble-avatar';
+    var avInner  = isUser ? 'SJ' : '<i class="fa-solid fa-robot"></i>';
+    var bubbleCls = isUser ? 'chat-bubble user' : 'chat-bubble bot';
+    return '<div class="' + wrapCls + '">'
+      + '<div class="' + avCls + '" aria-hidden="true">' + avInner + '</div>'
+      + '<div class="bubble-col">'
+      + '<div class="' + bubbleCls + '">' + esc(text) + '</div>'
+      + '<span class="bubble-time">' + time + '</span>'
+      + '</div>'
+      + '</div>';
+  }
+
+  function renderMessages(messages) {
+    var c = document.getElementById('chatMessages');
+    c.innerHTML = messages.map(function(m) { return buildBubble(m.role, m.text, m.time); }).join('');
+    c.scrollTop = c.scrollHeight;
+    toggleSuggestions(messages.length <= 1);
+  }
+
+  function appendBubble(role, text, time) {
+    var c = document.getElementById('chatMessages');
+    var el = document.createElement('div');
+    el.innerHTML = buildBubble(role, text, time);
+    c.appendChild(el.firstChild);
+    c.scrollTop = c.scrollHeight;
+    toggleSuggestions(false);
+  }
+
+  function showTyping() {
+    var c = document.getElementById('chatMessages');
+    var el = document.createElement('div');
+    el.className = 'chat-typing-wrap';
+    el.id = 'typingIndicator';
+    el.setAttribute('aria-label', 'Rosa is typing');
+    el.innerHTML = '<div class="bubble-avatar" aria-hidden="true"><i class="fa-solid fa-robot"></i></div>'
+      + '<div class="typing-dots"><span></span><span></span><span></span></div>';
+    c.appendChild(el);
+    c.scrollTop = c.scrollHeight;
+  }
+
+  function removeTyping() {
+    var el = document.getElementById('typingIndicator');
+    if (el) el.remove();
+  }
+
+  function toggleSuggestions(show) {
+    document.getElementById('chatSuggestions').style.display = show ? 'flex' : 'none';
+  }
+
+  function startNewChat() {
+    var chats = loadChats();
+    var id = 'chat_' + Date.now();
+    var welcome = {
+      role: 'bot',
+      text: "Hello Sarah \u{1F495} I’m Rosa, your CancerRise AI companion. I’m here to support you — whether you have questions about your treatment, need emotional support, or just want to talk. What’s on your mind today?",
+      time: nowTime()
+    };
+    chats.push({ id: id, title: 'New Conversation', date: nowLabel(), messages: [welcome] });
+    saveChats(chats);
+    currentChatId = id;
+    renderSidebar();
+    renderMessages([welcome]);
+  }
+
+  function loadChat(id) {
+    var chats = loadChats();
+    var chat = chats.find(function(c) { return c.id === id; });
+    if (!chat) return;
+    currentChatId = id;
+    renderSidebar();
+    renderMessages(chat.messages);
+  }
+
+  function clearChat() {
+    if (!currentChatId) return;
+    var chats = loadChats().filter(function(c) { return c.id !== currentChatId; });
+    saveChats(chats);
+    currentChatId = null;
+    startNewChat();
+  }
+
+  function sendMessage() {
+    var input = document.getElementById('chatInput');
+    var text = input.value.trim();
+    if (!text || isTyping) return;
+    input.value = '';
+
+    if (!currentChatId) startNewChat();
+
+    var time = nowTime();
+    appendBubble('user', text, time);
+
+    var chats = loadChats();
+    var chat = chats.find(function(c) { return c.id === currentChatId; });
+    if (chat) {
+      chat.messages.push({ role: 'user', text: text, time: time });
+      if (chat.messages.length === 2) {
+        chat.title = text.length > 36 ? text.slice(0, 36) + '…' : text;
+      }
+      saveChats(chats);
+    }
+
+    isTyping = true;
+    document.getElementById('sendBtn').disabled = true;
+    showTyping();
+
+    var delay = 1100 + Math.random() * 900;
+    setTimeout(function() {
+      removeTyping();
+      var reply = BOT_RESPONSES[responseIndex % BOT_RESPONSES.length];
+      responseIndex++;
+      var replyTime = nowTime();
+      appendBubble('bot', reply, replyTime);
+
+      var chats2 = loadChats();
+      var chat2 = chats2.find(function(c) { return c.id === currentChatId; });
+      if (chat2) {
+        chat2.messages.push({ role: 'bot', text: reply, time: replyTime });
+        saveChats(chats2);
+      }
+
+      isTyping = false;
+      document.getElementById('sendBtn').disabled = false;
+      renderSidebar();
+    }, delay);
+  }
+
+  function sendSuggestion(chip) {
+    document.getElementById('chatInput').value = chip.textContent.trim();
+    sendMessage();
+  }
+
+  document.getElementById('chatInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+
+  /* Init */
+  (function() {
+    var chats = loadChats();
+    if (chats.length > 0) {
+      currentChatId = chats[chats.length - 1].id;
+      renderSidebar();
+      renderMessages(chats[chats.length - 1].messages);
+    } else {
+      startNewChat();
+    }
+  })();
+</script>
+
+</body>
+</html>

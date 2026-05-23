@@ -1,0 +1,446 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Dashboard – CancerRise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'cancerapp/css/main.css' %}">
+</head>
+<body class="app-page">
+
+<!-- ===== APP TOP BAR ===== -->
+<header class="app-topbar" role="banner">
+  <div class="topbar-inner">
+
+
+
+    <div class="topbar-right">
+      <a href="{% url 'landing' %}" class="app-logo" aria-label="CancerRise home">
+        <i class="fa-solid fa-ribbon" aria-hidden="true"></i> CancerRise
+      </a>
+    </div>
+
+    <div class="topbar-left">
+      <a href="{% url 'settings' %}" class="profile-avatar" id="profileAvatar" aria-label="View your profile">KO</a>
+      <a href="{% url 'chatbot' %}" class="chatbot-btn" aria-label="Open AI chatbot support">
+        <i class="fa-solid fa-robot" aria-hidden="true"></i>
+      </a>
+    </div>
+
+  </div>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="app-main" role="main" aria-label="Patient dashboard">
+
+  <!-- Welcome Banner -->
+  <div class="welcome-banner" role="region" aria-label="Patient overview">
+    <div class="welcome-inner">
+      <div class="welcome-greeting">
+        <i class="fa-solid fa-sun" aria-hidden="true"></i> Good morning
+      </div>
+      <span class="welcome-name">Kenza Ouni</span>
+      <span class="status-pill" role="status" aria-live="polite">
+        <span class="status-dot" aria-hidden="true"></span>
+        No Evidence of Disease (NED)
+      </span>
+      <div class="welcome-meta" role="list">
+        <div class="meta-item" role="listitem">
+          <span class="meta-label">Diagnosis</span>
+          <span class="meta-value">Stage II Invasive Ductal Carcinoma</span>
+        </div>
+        <div class="meta-item" role="listitem">
+          <span class="meta-label">Patient ID</span>
+          <span class="meta-value">CR-2024-07891</span>
+        </div>
+        <div class="meta-item" role="listitem">
+          <span class="meta-label">Next Appointment</span>
+          <span class="meta-value">June 15, 2025</span>
+        </div>
+        <div class="meta-item" role="listitem">
+          <span class="meta-label">Care Team</span>
+          <span class="meta-value">Dr. Amira Khalil, Oncology</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 
+  <div class="stats-row" role="list" aria-label="Health summary statistics">
+
+    <div class="stat-card" role="listitem">
+      <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-calendar-days"></i></div>
+      <span class="stat-value">375</span>
+      <span class="stat-label">Days Since Diagnosis</span>
+    </div>
+
+    <div class="stat-card" role="listitem">
+      <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-syringe"></i></div>
+      <span class="stat-value">29</span>
+      <span class="stat-label">Treatments Completed</span>
+    </div>
+
+    <div class="stat-card" role="listitem">
+      <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></div>
+      <span class="stat-value" style="font-size: 1.1rem; color: var(--success);">NED</span>
+      <span class="stat-label">Current Status</span>
+    </div>
+
+    <div class="stat-card" role="listitem">
+      <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-hospital"></i></div>
+      <span class="stat-value">12</span>
+      <span class="stat-label">Hospital Visits</span>
+    </div>
+
+  </div>
+ -->
+  <!-- Dashboard Grid: Timeline + Progress -->
+  <div class="dashboard-grid" role="region" aria-label="Medical history dashboard">
+
+    <!-- Medical History Timeline -->
+    <section class="section-card" aria-labelledby="timeline-heading">
+      <div class="sc-header">
+        <h3 id="timeline-heading">
+          <i class="fa-solid fa-timeline" aria-hidden="true"></i>
+          Medical History
+        </h3>
+        <span class="badge-pill badge-pink-soft" style="font-size: 0.72rem;">13 Events</span>
+      </div>
+      <div class="sc-body">
+        <div class="timeline" role="list" aria-label="Medical events timeline">
+
+          <!-- 1 -->
+          <div class="tl-item" role="listitem">
+            <div class="tl-gutter" aria-hidden="true">
+              <div class="tl-dot"></div>
+              <div class="tl-connector"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">March 15, 2024</div>
+              <div class="tl-title">Initial Diagnosis</div>
+              <div class="tl-desc">Stage II Invasive Ductal Carcinoma (IDC) confirmed. Tumor size: <strong>3.2 cm</strong>. ER+/PR+/HER2−.</div>
+            </div>
+          </div>
+
+          <!-- 2 -->
+          <div class="tl-item" role="listitem">
+            <div class="tl-gutter" aria-hidden="true">
+              <div class="tl-dot"></div>
+              <div class="tl-connector"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">April 2, 2024</div>
+              <div class="tl-title">Core Needle Biopsy</div>
+              <div class="tl-desc">Pathology confirmed IDC, Grade 2. Hormone receptor positive, HER2 negative. Sentinel node biopsy: negative.</div>
+            </div>
+          </div>
+
+          <!-- 3 -->
+          <div class="tl-item" role="listitem">
+            <div class="tl-gutter" aria-hidden="true">
+              <div class="tl-dot"></div>
+              <div class="tl-connector"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">April 20, 2024</div>
+              <div class="tl-title">Surgical Consultation</div>
+              <div class="tl-desc">Dr. Amira Khalil recommended breast-conserving lumpectomy followed by adjuvant chemotherapy and radiation.</div>
+            </div>
+          </div>
+
+          <!-- 4 -->
+          <div class="tl-item" role="listitem">
+            <div class="tl-gutter" aria-hidden="true">
+              <div class="tl-dot"></div>
+              <div class="tl-connector"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">May 8, 2024</div>
+              <div class="tl-title">Surgery — Lumpectomy</div>
+              <div class="tl-desc">Breast-conserving surgery completed successfully. Post-surgical pathology: tumor <strong>2.8 cm</strong>, clear margins confirmed.</div>
+            </div>
+          </div>
+
+          <!-- 5 -->
+          <div class="tl-item" role="listitem">
+            <div class="tl-gutter" aria-hidden="true">
+              <div class="tl-dot"></div>
+              <div class="tl-connector"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">June 1, 2024</div>
+              <div class="tl-title">Chemotherapy — Cycle 1</div>
+              <div class="tl-desc">AC-T protocol initiated (Doxorubicin + Cyclophosphamide). Tolerated well. Side effects: mild nausea, fatigue.</div>
+            </div>
+          </div>
+
+          <!-- 6 -->
+          <div class="tl-item" role="listitem">
+            <div class="tl-gutter" aria-hidden="true">
+              <div class="tl-dot"></div>
+              <div class="tl-connector"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">July 15, 2024</div>
+              <div class="tl-title">Chemotherapy — Cycle 2</div>
+              <div class="tl-desc">Positive tumor response observed. Follow-up imaging shows reduction to <strong>2.1 cm</strong>. Bloodwork within range.</div>
+            </div>
+          </div>
+
+          <!-- 7 -->
+          <div class="tl-item" role="listitem">
+            <div class="tl-gutter" aria-hidden="true">
+              <div class="tl-dot"></div>
+              <div class="tl-connector"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">August 28, 2024</div>
+              <div class="tl-title">Chemotherapy — Cycle 3</div>
+              <div class="tl-desc">Continued strong response. Imaging: tumor <strong>1.5 cm</strong>. Transitioned to Paclitaxel (Taxol) phase of AC-T protocol.</div>
+            </div>
+          </div>
+
+          <!-- 8 -->
+          <div class="tl-item" role="listitem">
+            <div class="tl-gutter" aria-hidden="true">
+              <div class="tl-dot"></div>
+              <div class="tl-connector"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">September 20, 2024</div>
+              <div class="tl-title">Chemotherapy — Cycle 4 (Final)</div>
+              <div class="tl-desc">Final cycle completed. Exceptional response confirmed. Residual tumor: <strong>0.9 cm</strong>. No new lymph node involvement.</div>
+            </div>
+          </div>
+
+          <!-- 9 -->
+          <div class="tl-item" role="listitem">
+            <div class="tl-gutter" aria-hidden="true">
+              <div class="tl-dot"></div>
+              <div class="tl-connector"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">October 10, 2024</div>
+              <div class="tl-title">Post-Chemotherapy Evaluation</div>
+              <div class="tl-desc">Comprehensive imaging and pathological review. Near-complete pathological response confirmed. Lymph nodes: all clear.</div>
+            </div>
+          </div>
+
+          <!-- 10 -->
+          <div class="tl-item" role="listitem">
+            <div class="tl-gutter" aria-hidden="true">
+              <div class="tl-dot"></div>
+              <div class="tl-connector"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">November 5, 2024</div>
+              <div class="tl-title">Radiation Therapy — Begins</div>
+              <div class="tl-desc">25-session external beam radiation therapy initiated targeting the surgical site. Daily sessions, Monday–Friday.</div>
+            </div>
+          </div>
+
+          <!-- 11 -->
+          <div class="tl-item" role="listitem">
+            <div class="tl-gutter" aria-hidden="true">
+              <div class="tl-dot success"></div>
+              <div class="tl-connector"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">December 18, 2024</div>
+              <div class="tl-title">Radiation Therapy — Complete ✓</div>
+              <div class="tl-desc">All 25 radiation sessions completed successfully. Skin reaction: mild, resolving. No significant complications.</div>
+            </div>
+          </div>
+
+          <!-- 12 -->
+          <div class="tl-item" role="listitem">
+            <div class="tl-gutter" aria-hidden="true">
+              <div class="tl-dot success"></div>
+              <div class="tl-connector"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">January 15, 2025</div>
+              <div class="tl-title">6-Week Post-Radiation Check</div>
+              <div class="tl-desc">No active disease detected on ultrasound or mammography. Tumor markers (CA 15-3, CEA): within normal range.</div>
+            </div>
+          </div>
+
+          <!-- 13 -->
+          <div class="tl-item" role="listitem">
+            <div class="tl-gutter" aria-hidden="true">
+              <div class="tl-dot active"></div>
+              <div class="tl-connector"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">March 5, 2025 — Most Recent</div>
+              <div class="tl-title">Routine Follow-up Visit</div>
+              <div class="tl-desc"><strong>No Evidence of Disease (NED).</strong> All clear. Next scheduled check: June 15, 2025. Hormone therapy (Tamoxifen) ongoing.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Tumor Size Progress -->
+    <section class="section-card" aria-labelledby="progress-heading">
+      <div class="sc-header">
+        <h3 id="progress-heading">
+          <i class="fa-solid fa-chart-line" aria-hidden="true"></i>
+          Tumor Size Progress
+        </h3>
+        <span class="badge-pill badge-green" style="font-size: 0.72rem;">
+          <i class="fa-solid fa-arrow-down" aria-hidden="true"></i> 100% Reduction
+        </span>
+      </div>
+      <div class="sc-body">
+
+        <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.25rem; line-height: 1.5;">
+          Tumor size measured at each key clinical milestone. Maximum recorded: 3.2 cm.
+        </p>
+
+        <div class="size-list" role="list" aria-label="Tumor size at each visit">
+
+          <div class="size-row" role="listitem">
+            <span class="size-date">Mar 2024</span>
+            <div class="size-bar-bg" role="meter" aria-valuenow="3.2" aria-valuemin="0" aria-valuemax="3.5" aria-label="3.2 centimetres">
+              <div class="size-bar bar-pink" style="width: 91%;">3.2 cm</div>
+            </div>
+            <span class="size-val">3.2 cm</span>
+          </div>
+
+          <div class="size-row" role="listitem">
+            <span class="size-date">May 2024</span>
+            <div class="size-bar-bg" role="meter" aria-valuenow="2.8" aria-valuemin="0" aria-valuemax="3.5" aria-label="2.8 centimetres">
+              <div class="size-bar bar-pink" style="width: 80%;">2.8 cm</div>
+            </div>
+            <span class="size-val">2.8 cm</span>
+          </div>
+
+          <div class="size-row" role="listitem">
+            <span class="size-date">Jul 2024</span>
+            <div class="size-bar-bg" role="meter" aria-valuenow="2.1" aria-valuemin="0" aria-valuemax="3.5" aria-label="2.1 centimetres">
+              <div class="size-bar bar-pink" style="width: 60%;">2.1 cm</div>
+            </div>
+            <span class="size-val">2.1 cm</span>
+          </div>
+
+          <div class="size-row" role="listitem">
+            <span class="size-date">Aug 2024</span>
+            <div class="size-bar-bg" role="meter" aria-valuenow="1.5" aria-valuemin="0" aria-valuemax="3.5" aria-label="1.5 centimetres">
+              <div class="size-bar bar-mauve" style="width: 43%;">1.5 cm</div>
+            </div>
+            <span class="size-val">1.5 cm</span>
+          </div>
+
+          <div class="size-row" role="listitem">
+            <span class="size-date">Sep 2024</span>
+            <div class="size-bar-bg" role="meter" aria-valuenow="0.9" aria-valuemin="0" aria-valuemax="3.5" aria-label="0.9 centimetres">
+              <div class="size-bar bar-good" style="width: 26%;">0.9 cm</div>
+            </div>
+            <span class="size-val">0.9 cm</span>
+          </div>
+
+          <div class="size-row" role="listitem">
+            <span class="size-date">Mar 2025</span>
+            <div class="size-bar-bg" role="meter" aria-valuenow="0" aria-valuemin="0" aria-valuemax="3.5" aria-label="No evidence of disease">
+              <div class="size-bar bar-ned" style="width: 14%;">NED</div>
+            </div>
+            <span class="size-val" style="color: var(--success); font-size: 0.68rem;">NED ✓</span>
+          </div>
+
+        </div>
+
+        <!-- Milestone Summary -->
+        <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--border);">
+          <p style="font-size: 0.78rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem;">Treatment Milestones</p>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+
+            <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.82rem;">
+              <i class="fa-solid fa-circle-check" style="color: var(--success); font-size: 0.85rem;" aria-hidden="true"></i>
+              <span style="color: var(--text-secondary);">Lumpectomy — <strong>May 8, 2024</strong></span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.82rem;">
+              <i class="fa-solid fa-circle-check" style="color: var(--success); font-size: 0.85rem;" aria-hidden="true"></i>
+              <span style="color: var(--text-secondary);">4 Chemotherapy Cycles — <strong>Jun–Sep 2024</strong></span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.82rem;">
+              <i class="fa-solid fa-circle-check" style="color: var(--success); font-size: 0.85rem;" aria-hidden="true"></i>
+              <span style="color: var(--text-secondary);">25 Radiation Sessions — <strong>Nov–Dec 2024</strong></span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.82rem;">
+              <i class="fa-solid fa-circle-check" style="color: var(--success); font-size: 0.85rem;" aria-hidden="true"></i>
+              <span style="color: var(--text-secondary);">NED Confirmed — <strong>March 2025</strong></span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.82rem; margin-top: 0.2rem;">
+              <i class="fa-solid fa-clock" style="color: var(--pink-500); font-size: 0.85rem;" aria-hidden="true"></i>
+              <span style="color: var(--text-secondary);">Hormone Therapy (Tamoxifen) — <strong>Ongoing</strong></span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Quick Actions: Water, Feelings, Alert -->
+  <div class="quick-actions" role="region" aria-label="Daily health tracking">
+
+    <!-- Water History -->
+    <div class="qa-row">
+      <div class="qa-icon qa-blue" aria-hidden="true">
+        <i class="fa-solid fa-droplet"></i>
+      </div>
+      <div class="qa-text">
+        <h4>Water History</h4>
+        <p>Track your daily hydration intake. Staying well-hydrated is essential during treatment and supports your recovery and energy levels.</p>
+      </div>
+      <a href="{% url 'water' %}" class="btn btn-secondary" aria-label="Go to water tracking">
+        Track Water <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+      </a>
+    </div>
+
+    <!-- Feelings -->
+    <div class="qa-row">
+      <div class="qa-icon qa-purple" aria-hidden="true">
+        <i class="fa-solid fa-face-smile"></i>
+      </div>
+      <div class="qa-text">
+        <h4>Feelings Journal</h4>
+        <p>Log your mood and emotional state each day. Your mental wellbeing matters just as much as your physical recovery — we're here for both.</p>
+      </div>
+      <a href="{% url 'feelings' %}" class="btn btn-secondary" aria-label="Go to feelings journal">
+        Log Feelings <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+      </a>
+    </div>
+
+    <!-- Alert (red) -->
+    <div class="qa-row alert-row" role="alert" aria-label="You have pending medical alerts">
+      <div class="qa-icon qa-red" aria-hidden="true">
+        <i class="fa-solid fa-bell"></i>
+      </div>
+      <div class="qa-text">
+        <h4>
+          Alerts
+          <span class="alert-badge" aria-label="2 unread alerts">2</span>
+        </h4>
+        <p>You have <strong>2 pending alerts</strong> from your medical team. Please review them at your earliest convenience.</p>
+      </div>
+      <a href="{% url 'alert' %}" class="btn btn-danger" aria-label="View your 2 medical alerts">
+        View Alerts <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+      </a>
+    </div>
+
+  </div>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,404 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CancerRise – Your Breast Cancer Rehabilitation Platform</title>
+  <meta name="description" content="CancerRise is a compassionate digital platform for breast cancer patients. Access your full medical history, electronic hospital card, AI support, and wellness tools.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'cancerapp/css/main.css' %}">
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="landing-nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="{% url 'landing' %}" class="nav-logo" aria-label="CancerRise home">
+      <i class="fa-solid fa-ribbon" aria-hidden="true"></i> CancerRise
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="#about">About</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#ecard">Your Card</a></li>
+      <li><a href="#accessibility">Accessibility</a></li>
+      <li><a href="#privacy">Privacy</a></li>
+    </ul>
+    <a href="{% url 'login_view' %}" class="btn btn-primary">Sign In</a>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" aria-labelledby="hero-heading">
+  <div class="container">
+    <div class="hero-grid">
+
+      <div class="hero-text">
+        <span class="badge-pill badge-pink-soft">
+          <i class="fa-solid fa-heart-pulse" aria-hidden="true"></i>
+          Breast Cancer Rehabilitation Platform
+        </span>
+        <h1 id="hero-heading">Your Journey to Recovery, Supported Every Step</h1>
+        <p>CancerRise is a compassionate digital companion for women navigating breast cancer treatment and recovery. Access your full medical history, track your progress, and feel truly supported — wherever you are.</p>
+        <div class="hero-actions">
+          <a href="{% url 'login_view' %}" class="btn btn-primary btn-lg">
+            <i class="fa-solid fa-arrow-right-to-bracket" aria-hidden="true"></i>
+            Get Started
+          </a>
+          <a href="#features" class="btn btn-secondary btn-lg">
+            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+            Learn More
+          </a>
+        </div>
+        
+      </div>
+
+
+      <!-- Electronic Card Preview with Bow -->
+      <div class="hero-visual" aria-hidden="true">
+        <div class="card-bow-scene">
+
+          <!-- Big decorative pink bow behind the card -->
+          <svg class="bow-svg" viewBox="0 0 500 270" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="bowDrop" x="-25%" y="-25%" width="150%" height="150%">
+                <feDropShadow dx="0" dy="7" stdDeviation="11" flood-color="rgba(176, 48, 112, 0.30)"/>
+              </filter>
+              <linearGradient id="lgLeft" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%"   stop-color="#FFD6E7"/>
+                <stop offset="55%"  stop-color="#FFC4DC"/>
+                <stop offset="100%" stop-color="#FFADD0"/>
+              </linearGradient>
+              <linearGradient id="lgRight" x1="1" y1="0" x2="0" y2="1">
+                <stop offset="0%"   stop-color="#FFCFE0"/>
+                <stop offset="55%"  stop-color="#FFB8D4"/>
+                <stop offset="100%" stop-color="#FFA5C8"/>
+              </linearGradient>
+              <radialGradient id="knotRG" cx="38%" cy="32%" r="65%">
+                <stop offset="0%"   stop-color="#EC5E96"/>
+                <stop offset="100%" stop-color="#A02D62"/>
+              </radialGradient>
+            </defs>
+
+            <!-- Ribbon tails (hang behind the card) -->
+            <path d="M 243 145 Q 218 192 196 236 Q 208 244 216 238 Q 222 232 222 226 Q 240 192 252 150 Z"
+                  fill="#FFB3CC" opacity="0.82"/>
+            <path d="M 257 145 Q 282 192 304 236 Q 292 244 284 238 Q 278 232 278 226 Q 260 192 248 150 Z"
+                  fill="#FFC4DC" opacity="0.82"/>
+
+            <!-- Left loop (extends well past left edge of card) -->
+            <path d="M 250 135
+                     C 218 95, 85 35, 38 80
+                     C 5 126, 85 172, 178 157
+                     C 208 150, 234 142, 250 135 Z"
+                  fill="url(#lgLeft)" filter="url(#bowDrop)"/>
+            <!-- Left loop inner highlight (light crease for depth) -->
+            <path d="M 247 133
+                     C 220 102, 105 55, 68 92
+                     C 44 122, 106 158, 184 146
+                     C 210 139, 237 135, 247 133 Z"
+                  fill="white" opacity="0.24"/>
+
+            <!-- Right loop (extends well past right edge of card) -->
+            <path d="M 250 135
+                     C 282 95, 415 35, 462 80
+                     C 495 126, 415 172, 322 157
+                     C 292 150, 266 142, 250 135 Z"
+                  fill="url(#lgRight)" filter="url(#bowDrop)"/>
+            <!-- Right loop inner highlight -->
+            <path d="M 253 133
+                     C 280 102, 395 55, 432 92
+                     C 456 122, 394 158, 316 146
+                     C 290 139, 263 135, 253 133 Z"
+                  fill="white" opacity="0.20"/>
+
+            <!-- Centre knot -->
+            <ellipse cx="250" cy="138" rx="31" ry="25" fill="url(#knotRG)" filter="url(#bowDrop)"/>
+            <ellipse cx="250" cy="136" rx="18" ry="15" fill="#E0558F" opacity="0.60"/>
+            <ellipse cx="248" cy="133" rx="9"  ry="7"  fill="white"   opacity="0.28"/>
+          </svg>
+
+          <!-- Card sits on top of the bow -->
+          <div class="e-card-wrapper">
+            <div class="e-card">
+              <div class="card-top-row">
+                <span class="card-logo-text">Cancer<span>Rise</span></span>
+                <i class="fa-solid fa-shield-halved card-shield"></i>
+              </div>
+              <div class="card-chip"></div>
+              <div class="card-name">KENZA OUNI</div>
+              <div class="card-id">ID: CR-2024-07891</div>
+              <div class="card-bottom-row">
+                <span class="card-access-badge">
+                  <i class="fa-solid fa-hospital"></i>
+                  Hospital Access Granted
+                </span>
+                <span class="card-valid">Valid 2024–2026</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+          <div class="hero-stats" role="list">
+          <div class="hero-stat" role="listitem">
+            <span class="stat-value">100%</span>
+            <span class="stat-label">Private &amp; Secure</span>
+          </div>
+          <div class="hero-stat" role="listitem">
+            <span class="stat-value">24 / 7</span>
+            <span class="stat-label">AI Support</span>
+          </div>
+          <div class="hero-stat" role="listitem">
+            <span class="stat-value">All Ages</span>
+            <span class="stat-label">Accessible Design</span>
+          </div>
+        </div>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section class="section" id="about" style="background: #fff;" aria-labelledby="about-heading">
+  <div class="container">
+    <div class="section-header">
+      <h2 id="about-heading">What is CancerRise?</h2>
+      <div class="divider" aria-hidden="true"></div>
+      <p>CancerRise is a secure, compassionate platform built specifically for breast cancer patients. From diagnosis to recovery, we provide the tools, data, and support you need to feel empowered on your healing journey — at any age, on any device.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section class="section features-section" id="features" aria-labelledby="features-heading">
+  <div class="container">
+    <div class="section-header">
+      <h2 id="features-heading">Everything You Need, In One Place</h2>
+      <div class="divider" aria-hidden="true"></div>
+      <p>Designed with care for patients of all ages, CancerRise brings together your medical history, daily wellbeing tools, and private hospital access.</p>
+    </div>
+
+    <div class="features-grid" role="list">
+
+      <article class="feature-card" role="listitem">
+        <div class="feature-icon" aria-hidden="true"><i class="fa-solid fa-id-card-clip"></i></div>
+        <h4>Electronic Health Card</h4>
+        <p>Your exclusive digital card grants access to private, specialized services at partner hospitals — no paperwork, no delays, instant recognition.</p>
+      </article>
+
+      <article class="feature-card" role="listitem">
+        <div class="feature-icon" aria-hidden="true"><i class="fa-solid fa-file-medical"></i></div>
+        <h4>Full Medical History</h4>
+        <p>Access your complete cancer record: diagnoses, operations, treatments, progress notes, and lab results — all securely in one place.</p>
+      </article>
+
+      <article class="feature-card" role="listitem">
+        <div class="feature-icon" aria-hidden="true"><i class="fa-solid fa-chart-line"></i></div>
+        <h4>Cancer Progress Tracking</h4>
+        <p>Visualize how your cancer is responding to treatment with clear charts tracking tumor size changes and medical milestones over time.</p>
+      </article>
+
+      <article class="feature-card" role="listitem">
+        <div class="feature-icon" aria-hidden="true"><i class="fa-solid fa-robot"></i></div>
+        <h4>AI Chatbot Support</h4>
+        <p>Our compassionate AI companion is available 24/7 to answer questions, ease anxiety, and guide you through every step of your recovery.</p>
+      </article>
+
+      <article class="feature-card" role="listitem">
+        <div class="feature-icon" aria-hidden="true"><i class="fa-solid fa-droplet"></i></div>
+        <h4>Daily Hydration Tracker</h4>
+        <p>Monitor your daily water intake — an essential part of recovery and overall wellbeing during and after cancer treatment.</p>
+      </article>
+
+      <article class="feature-card" role="listitem">
+        <div class="feature-icon" aria-hidden="true"><i class="fa-solid fa-face-smile-beam"></i></div>
+        <h4>Mood &amp; Feelings Journal</h4>
+        <p>Log your emotional state each day and track your mental wellness alongside your physical progress — because healing is whole-person.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== ELECTRONIC CARD ===== -->
+<section class="section ecard-section" id="ecard" aria-labelledby="ecard-heading">
+  <div class="container">
+    <div class="ecard-grid">
+
+      <div class="ecard-info">
+        <span class="badge-pill badge-pink-soft" style="margin-bottom: 1.5rem;">
+          <i class="fa-solid fa-id-card" aria-hidden="true"></i>
+          Your CancerRise Card
+        </span>
+        <h2 id="ecard-heading">Your Key to Priority Hospital Care</h2>
+        <p>Every CancerRise member receives a personalized electronic card — your secure passport to priority, private services at partner hospitals and clinics.</p>
+        <ul class="ecard-benefits" role="list">
+          <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Instant access to your complete medical history at any partner facility</li>
+          <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Skip standard queues with priority specialist appointments</li>
+          <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Secure, encrypted data sharing between your care team</li>
+          <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Automatic updates when new treatments or labs are added</li>
+          <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Works across all partner hospitals and clinics nationwide</li>
+        </ul>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="e-card-wrapper">
+          <div class="e-card">
+            <div class="card-top-row">
+              <span class="card-logo-text">Cancer<span>Rise</span></span>
+              <i class="fa-solid fa-shield-halved card-shield"></i>
+            </div>
+            <div class="card-chip"></div>
+            <div class="card-name">KENZA OUNI</div>
+            <div class="card-id">ID: CR-2024-07891</div>
+            <div class="card-bottom-row">
+              <span class="card-access-badge">
+                <i class="fa-solid fa-hospital"></i>
+                Hospital Access Granted
+              </span>
+              <span class="card-valid">Valid 2024–2026</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== ACCESSIBILITY ===== -->
+<section class="section" id="accessibility" style="background: #fff;" aria-labelledby="access-heading">
+  <div class="container">
+    <div class="section-header">
+      <h2 id="access-heading">Designed for Everyone</h2>
+      <div class="divider" aria-hidden="true"></div>
+      <p>We believe every patient deserves a platform that truly works for them. CancerRise is built from the ground up with accessibility at its heart.</p>
+    </div>
+    <div class="access-grid" role="list">
+
+      <div class="access-card" role="listitem">
+        <i class="fa-solid fa-text-height" aria-hidden="true"></i>
+        <h5>Large, Clear Text</h5>
+        <p>Easy-to-read typography with generous spacing suitable for all ages and vision levels.</p>
+      </div>
+
+      <div class="access-card" role="listitem">
+        <i class="fa-solid fa-universal-access" aria-hidden="true"></i>
+        <h5>Screen Reader Ready</h5>
+        <p>Full ARIA support for visually impaired patients using assistive screen readers.</p>
+      </div>
+
+      <div class="access-card" role="listitem">
+        <i class="fa-solid fa-hand-pointer" aria-hidden="true"></i>
+        <h5>Large Touch Targets</h5>
+        <p>Buttons and links sized for easy, confident tapping on any mobile device.</p>
+      </div>
+
+      <div class="access-card" role="listitem">
+        <i class="fa-solid fa-mobile-screen" aria-hidden="true"></i>
+        <h5>Works Everywhere</h5>
+        <p>Fully responsive — phone, tablet, or desktop. Your data, always at your fingertips.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRIVACY ===== -->
+<section class="section privacy-section" id="privacy" aria-labelledby="privacy-heading">
+  <div class="container">
+    <div class="section-header">
+      <h2 id="privacy-heading">Your Privacy is Sacred</h2>
+      <div class="divider" aria-hidden="true"></div>
+      <p>Your medical data is deeply personal. We protect it with the highest standards of security and treat it with the respect it deserves.</p>
+    </div>
+    <div class="privacy-grid" role="list">
+
+      <div class="privacy-card" role="listitem">
+        <i class="fa-solid fa-lock" aria-hidden="true"></i>
+        <h4>End-to-End Encryption</h4>
+        <p>All your medical data is encrypted at rest and in transit. Only you and your authorized care team can ever access it.</p>
+      </div>
+
+      <div class="privacy-card" role="listitem">
+        <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+        <h4>HIPAA Compliant</h4>
+        <p>CancerRise meets the highest medical privacy standards, including full HIPAA compliance for all patient data handling.</p>
+      </div>
+
+      <div class="privacy-card" role="listitem">
+        <i class="fa-solid fa-user-shield" aria-hidden="true"></i>
+        <h4>You Control Your Data</h4>
+        <p>You decide who sees your information. Revoke access at any time, no questions asked — your data, your rules, always.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="section cta-section" aria-labelledby="cta-heading">
+  <div class="container">
+    <h2 id="cta-heading">Ready to Begin Your CancerRise Journey?</h2>
+    <p>Join thousands of women who are tracking their recovery and feeling more in control of their health every day.</p>
+    <div class="cta-actions">
+      <a href="{% url 'login_view' %}" class="btn btn-primary btn-lg">
+        <i class="fa-solid fa-arrow-right-to-bracket" aria-hidden="true"></i>
+        Sign In to Your Account
+      </a>
+      <a href="#features" class="btn btn-secondary btn-lg">
+        <i class="fa-solid fa-circle-play" aria-hidden="true"></i>
+        Explore Features
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">
+        <i class="fa-solid fa-ribbon" aria-hidden="true"></i> CancerRise
+      </div>
+      <p class="footer-desc">A compassionate digital platform supporting breast cancer patients through every stage of treatment and recovery.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Platform</div>
+      <ul class="footer-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#ecard">Your Card</a></li>
+        <li><a href="#accessibility">Accessibility</a></li>
+        <li><a href="{% url 'login_view' %}">Sign In</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Support</div>
+      <ul class="footer-links">
+        <li><a href="#">Help Centre</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Partner Hospitals</a></li>
+        <li><a href="#">Medical Team</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Legal</div>
+      <ul class="footer-links">
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Data Rights</a></li>
+        <li><a href="#">Cookie Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2024 CancerRise. All rights reserved. Built with care for every patient's journey.</p>
+  </div>
+</footer>
+
+</body>
+</html>
