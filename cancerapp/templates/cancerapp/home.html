@@ -56,7 +56,7 @@
         </div>
         <div class="meta-item" role="listitem">
           <span class="meta-label">Patient ID</span>
-          <span class="meta-value">CR-2024-07891</span>
+          <span class="meta-value" id="metaPatientId">—</span>
         </div>
         <div class="meta-item" role="listitem">
           <span class="meta-label">Next Appointment</span>
@@ -456,6 +456,12 @@
     if (initials) {
       var avatarEl = document.getElementById('profileAvatar');
       if (avatarEl) avatarEl.textContent = initials;
+    }
+
+    var patientId = sessionStorage.getItem('cr_id');
+    if (patientId) {
+      var pidEl = document.getElementById('metaPatientId');
+      if (pidEl) pidEl.textContent = 'CR-2026-' + patientId;
     }
 
     /* Dynamic greeting based on time of day */
