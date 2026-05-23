@@ -1523,6 +1523,7 @@ body.chatbot-page .page-topbar-bar { margin-bottom: 1rem; flex-shrink: 0; }
 
   .qa-row { flex-wrap: wrap; }
   .welcome-meta { flex-wrap: wrap; gap: 1rem; }
+  .hero-visual { display: none; }
 }
 
 @media (max-width: 480px) {
