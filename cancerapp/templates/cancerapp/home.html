@@ -41,10 +41,10 @@
   <!-- Welcome Banner -->
   <div class="welcome-banner" role="region" aria-label="Patient overview">
     <div class="welcome-inner">
-      <div class="welcome-greeting">
+      <div class="welcome-greeting" id="welcomeGreeting">
         <i class="fa-solid fa-sun" aria-hidden="true"></i> Good morning
       </div>
-      <span class="welcome-name">Kenza Ouni</span>
+      <span class="welcome-name" id="welcomeName">Kenza Ouni</span>
       <span class="status-pill" role="status" aria-live="polite">
         <span class="status-dot" aria-hidden="true"></span>
         No Evidence of Disease (NED)
@@ -441,6 +441,35 @@
   </div>
 
 </main>
+
+<script>
+  /* Inject the name from sessionStorage (set by login page on successful sign-in) */
+  (function() {
+    var name     = sessionStorage.getItem('cr_name');
+    var initials = sessionStorage.getItem('cr_initials');
+
+    if (name) {
+      var nameEl = document.getElementById('welcomeName');
+      if (nameEl) nameEl.textContent = name;
+    }
+
+    if (initials) {
+      var avatarEl = document.getElementById('profileAvatar');
+      if (avatarEl) avatarEl.textContent = initials;
+    }
+
+    /* Dynamic greeting based on time of day */
+    var greetEl = document.getElementById('welcomeGreeting');
+    if (greetEl) {
+      var h = new Date().getHours();
+      var icon, word;
+      if (h < 12)       { icon = 'fa-sun';  word = 'Good morning'; }
+      else if (h < 18)  { icon = 'fa-cloud-sun'; word = 'Good afternoon'; }
+      else              { icon = 'fa-moon'; word = 'Good evening'; }
+      greetEl.innerHTML = '<i class="fa-solid ' + icon + '" aria-hidden="true"></i> ' + word;
+    }
+  })();
+</script>
 
 </body>
 </html>
