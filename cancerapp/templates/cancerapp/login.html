@@ -254,39 +254,11 @@
       setStatus('loading', 'Verifying identity…');
     }
 
-    /* Firestore structured query: username + id + pin must all match */
+    /* Fetch all users then match in JS (avoids Firestore composite index issues) */
     var body = {
       structuredQuery: {
         from: [{ collectionId: 'users' }],
-        where: {
-          compositeFilter: {
-            op: 'AND',
-            filters: [
-              {
-                fieldFilter: {
-                  field: { fieldPath: 'username' },
-                  op: 'EQUAL',
-                  value: { stringValue: fullName }
-                }
-              },
-              {
-                fieldFilter: {
-                  field: { fieldPath: 'id' },
-                  op: 'EQUAL',
-                  value: { stringValue: id }
-                }
-              },
-              {
-                fieldFilter: {
-                  field: { fieldPath: 'pin' },
-                  op: 'EQUAL',
-                  value: { stringValue: pin }
-                }
-              }
-            ]
-          }
-        },
-        limit: 1
+        limit: 100
       }
     };
 
@@ -304,24 +276,30 @@
       isVerifying = false;
 
       if (!result.ok) {
-        /* Show the real Firestore error for easier debugging */
-        var msg = result.data && result.data.error && result.data.error.message
-          ? result.data.error.message
-          : 'HTTP ' + result.status;
-
         if (result.status === 403) {
           setStatus('error', 'Database access denied');
-          showError('Permission denied by database. Ask your admin to update Firestore security rules.');
+          showError('Permission denied by database. Update Firestore security rules.');
         } else {
           setStatus('error', 'Database error');
-          showError('Database error: ' + msg);
+          showError('Database error — please try again.');
         }
-        console.error('Firestore error:', result.data);
         return;
       }
 
-      /* Firestore returns an array; a match has a "document" key */
-      var matched = result.data && result.data[0] && result.data[0].document;
+      /* Match username + id + pin in JS, handling both string and integer field types */
+      var matched = null;
+      for (var i = 0; i < result.data.length; i++) {
+        var doc = result.data[i].document;
+        if (!doc) continue;
+        var f = doc.fields || {};
+        var dbUsername = f.username ? (f.username.stringValue || '') : '';
+        var dbId       = f.id  ? (f.id.stringValue  || String(f.id.integerValue  || '')) : '';
+        var dbPin      = f.pin ? (f.pin.stringValue  || String(f.pin.integerValue || '')) : '';
+        if (dbUsername === fullName && dbId === id && dbPin === pin) {
+          matched = doc;
+          break;
+        }
+      }
 
       if (matched) {
         onLoginSuccess(fullName, matched);
@@ -334,7 +312,6 @@
       isVerifying = false;
       setStatus('error', 'Network error');
       showError('Cannot reach the database — check your internet connection.');
-      console.error('Network error:', err);
     });
   }
 
